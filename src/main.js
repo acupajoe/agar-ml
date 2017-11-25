@@ -5,6 +5,7 @@ const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
   legend: {
+    display: false
   },
   scales: {
     xAxes: [{

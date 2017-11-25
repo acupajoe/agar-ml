@@ -36,6 +36,7 @@ export default class Bot {
     this.area = settings.area.min
     this.visualArea = this.area
     this.aggro = this.area
+    this.detected = []
   }
 
   update () {
@@ -59,8 +60,8 @@ export default class Bot {
     this.y += this.vy
 
     // Force bot to stay in bounds
-    this.x = this.x >= settings.width ? this.x % settings.width : this.x <= 0 ? this.x + settings.width : this.x
-    this.y = this.y >= settings.height ? this.y % settings.height : this.y <= 0 ? this.y + settings.height : this.y
+    this.x = this.x >= settings.width ? settings.width : this.x <= 0 ? 0 : this.x
+    this.y = this.y >= settings.height ? settings.height : this.y <= 0 ? 0 : this.y
 
     this.area *= settings.size.decrease
 
@@ -80,6 +81,10 @@ export default class Bot {
 
     fill(color)
     ellipse(this.x, this.y, radius)
+
+    if (settings.shouldShowDetection || distance(mouseX, mouseY, this.x, this.y) < Math.sqrt(this.visualArea / Math.PI)) {
+      this.showDetection()
+    }
   }
 
   reset () {
@@ -168,6 +173,21 @@ export default class Bot {
       }
     }
 
+    this.detected = nearestPlayers.concat(nearestFood)
     return output
+  }
+
+  showDetection () {
+    noFill()
+    for (let obj of this.detected) {
+      if (obj !== undefined) {
+        stroke(obj instanceof Bot ? 'red' : 'lightgreen')
+        line(this.x, this.y, obj.x, obj.y)
+      }
+    }
+
+    let color = activationColor(this.cognition.score, window.Game.highestFitness)
+    stroke(color)
+    ellipse(this.x, this.y, settings.detection.radius * 2)
   }
 }

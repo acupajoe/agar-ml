@@ -4,6 +4,7 @@ const settings = require('./settings')
 
 const Neat = neataptic.Neat
 const Methods = neataptic.Methods
+const Network = neataptic.Network
 const Architect = neataptic.Architect
 
 class Trainer {
@@ -37,7 +38,13 @@ class Trainer {
         )
       })
     if (settings.isTrainedPop) {
-      // neat.population = population
+      let population = []
+      const saved = require('./trained-population.json')
+      for (let i = 0; i < settings.bots; i++) {
+        let json = saved[i % saved.length]
+        population.push(Network.fromJSON(json))
+      }
+      this.neat.population = population
     }
   }
 
@@ -79,7 +86,9 @@ class Trainer {
     this.neat.mutate()
     this.neat.generation++
 
-    this.start()
+    if (this.neat.generation < settings.maxGenerations) {
+      this.start()
+    }
   }
 }
 

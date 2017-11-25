@@ -5,8 +5,8 @@ module.exports = {
   width: width,
   height: height,
   area: {
-    min: 1000,
-    max: 10000
+    min: 7500,
+    max: 30000
   },
   size: {
     relative: 1.1,
@@ -22,13 +22,15 @@ module.exports = {
     normal: 2
   },
   food: {
-    area: 100,
+    area: 750,
     amount: Math.round(width * height * 4e-4)
   },
   bots: 15,
-  iterations: 1000,
-  startingHiddenSize: 0,
-  mutationRate: 0.4,
-  elitismPercent: 0.3,
+  iterations: 750,
+  maxGenerations: 1000,
+  startingHiddenSize: 2,
+  mutationRate: 0.275,
+  elitismPercent: 0.15,
+  shouldShowDetection: false,
   isTrainedPop: false
 }
