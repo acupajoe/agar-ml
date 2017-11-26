@@ -1,6 +1,6 @@
 import Bot from './bot'
 
-const settings = require('./settings')
+const settings = require('../settings')
 
 const Neat = neataptic.Neat
 const Methods = neataptic.Methods

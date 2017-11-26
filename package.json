@@ -5,21 +5,29 @@
   "author": "Joseph Schultz <joseph@acupajoe.io>",
   "license": "MIT",
   "scripts": {
-    "start": "opn http://localhost:3000 && node ./server"
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "qlearning": "opn http://localhost:3000 && nodemon ./dist/qlearning-server.bundle",
+    "neat": "opn http://localhost:3000 && nodemon ./dist/neat-server.bundle"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
-    "rimraf": "^2.6.2"
+    "q-exp": "^0.0.3",
+    "random-words": "^0.0.1",
+    "rimraf": "^2.6.2",
+    "socket.io": "^2.0.4"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.32",
     "@babel/preset-env": "^7.0.0-beta.32",
     "babel-loader": "8.0.0-beta.0",
+    "html-loader": "^0.5.1",
     "http-server": "^0.10.0",
     "opn-cli": "^3.1.0",
     "standard": "^10.0.3",
-    "webpack": "^3.8.1"
+    "webpack": "^3.8.1",
+    "worker-loader": "^1.1.0"
   },
   "standard": {
     "global": [

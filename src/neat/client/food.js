@@ -1,7 +1,9 @@
-import settings from './settings'
+import Entity from '../../entity'
+import settings from '../settings'
 
-export default class Food {
+export default class Food extends Entity {
   constructor () {
+    super()
     this.x = Math.floor(Math.random() * settings.width)
     this.y = Math.floor(Math.random() * settings.height)
     this.area = settings.food.area
@@ -21,4 +23,6 @@ export default class Food {
     this.x = Math.floor(Math.random() * settings.width)
     this.y = Math.floor(Math.random() * settings.height)
   }
+
+  update () {}
 }

@@ -32,5 +32,5 @@ module.exports = {
   mutationRate: 0.275,
   elitismPercent: 0.15,
   shouldShowDetection: false,
-  isTrainedPop: false
+  isTrainedPop: true
 }

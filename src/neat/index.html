@@ -1,0 +1,57 @@
+<html>
+<head>
+    <title>NEAT agar.io Learning</title>
+    <style>
+        html, body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #status {
+            background: rgba(0, 0, 0, 0.6);
+            padding: 15px;
+            color: #fefefe;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            text-transform: uppercase;
+        }
+
+        #status > p {
+            display: inline-block;
+            margin: 5px 15px;
+        }
+
+        #chart-container {
+            position: relative;
+            height: 250px;
+            padding-top: 10px;
+        }
+
+        #chart {
+            height: auto !important;
+        }
+
+        #download {
+            position: absolute;
+            top: -100%;
+            left: -100%;
+        }
+    </style>
+    <script src="/libs/jquery-3.2.1.min.js"></script>
+    <script src="/libs/neataptic.js"></script>
+    <script src="/libs/p5.min.js"></script>
+    <script src="/libs/chart.min.js"></script>
+</head>
+<body>
+<div id="status">
+    <p>Generation <span id="generation">0</span></p>
+    <p>Iteration <span id="iteration">0</span></p>
+    <p>Average Fitness: <span id="average-fitness">0</span></p>
+    <p>Highest Fitness: <span id="highest-fitness">0</span></p>
+    <div id="download"></div>
+</div>
+<div id="chart-container">
+    <canvas id="chart"></canvas>
+</div>
+<script src="/dist/neat.bundle.js"></script>
+</body>
+</html>

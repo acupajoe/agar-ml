@@ -1,4 +1,4 @@
-import settings from './settings'
+import settings from '../settings'
 import Trainer from './trainer'
 import Food from './food'
 
