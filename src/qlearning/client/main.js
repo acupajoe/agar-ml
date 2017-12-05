@@ -11,14 +11,22 @@ window.setup = () => {
   // Set server's settings for creating the game
   window.socket.on('connect', () => {
     window.socket.emit('init', settings)
+     // window.socket.emit('tick')
   })
 
   // Handle a draw tick
   window.socket.on('tick', (data) => {
-
+    window.Game.update(data.food, data.bots)
+    window.Game.draw()
   })
 }
 
+let limit = 100
+let lastDraw = Date.now()
 window.draw = () => {
-  window.socket.emit('tick') // <-- see method in setup
+  let now = Date.now()
+  if ((now - lastDraw) > limit) {
+    window.socket.emit('tick') // <-- see method in setup
+    lastDraw = Date.now()
+  }
 }

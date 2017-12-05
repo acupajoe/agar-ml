@@ -60,89 +60,17 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 18);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 18:
 /***/ (function(module, exports) {
 
-module.exports = require("express");
 
-/***/ }),
-/* 1 */
-/***/ (function(module, exports) {
-
-module.exports = require("body-parser");
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports) {
-
-module.exports = require("http");
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports) {
-
-module.exports = require("path");
-
-/***/ }),
-/* 4 */,
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-/* WEBPACK VAR INJECTION */(function(__dirname) {const express = __webpack_require__(0)
-const bodyParser = __webpack_require__(1)
-const fs = __webpack_require__(6)
-const http = __webpack_require__(2)
-const path = __webpack_require__(3)
-const rimraf = __webpack_require__(7)
-const port = process.env.PORT || 3000
-
-let app = express()
-let server = http.Server(app)
-
-app.use(bodyParser.urlencoded({extended: true}))
-app.use('/libs', express.static(path.join(path.resolve(__dirname, '../../'), 'libs')))
-app.use('/dist', express.static(path.join(path.resolve(__dirname, '../../'), 'dist')))
-
-rimraf.sync('../training-data')
-
-app.get('/', (req, res, next) => {
-  res.sendFile(path.join(path.resolve(__dirname, '..'), 'index.html'))
-})
-
-app.post('/store', (req, res, next) => {
-  let generation = req.body.generation
-  let data = req.body.data
-
-  if (!fs.existsSync('../training-data')) {
-    fs.mkdirSync('../training-data')
-  }
-
-  fs.writeFile(`../training-data/generation-${generation}.json`, data, (err) => {
-    res.json({stored: !err})
-  })
-})
-
-server.on('listening', () => console.log(`Listening on ::${port}`))
-server.listen(port)
-
-/* WEBPACK VAR INJECTION */}.call(exports, "src/neat/server"))
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-module.exports = require("fs");
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-module.exports = require("rimraf");
 
 /***/ })
-/******/ ]);
-//# sourceMappingURL=neat-server.bundle.js.map
+
+/******/ });
+//# sourceMappingURL=nn-server.bundle.js.map

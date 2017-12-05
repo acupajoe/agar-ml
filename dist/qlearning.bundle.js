@@ -65,9 +65,45 @@
 /************************************************************************/
 /******/ ([
 /* 0 */,
-/* 1 */,
+/* 1 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+const activationColor = (value, max) => {
+  let power = 1 - Math.min(value / max, 1)
+  let color = [255, 255, 0]
+
+  if (power < 0.5) {
+    color[0] = 2 * power * 255
+  } else {
+    color[1] = (1.0 - 2 * (power - 0.5)) * 255
+  }
+
+  return color
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = activationColor;
+
+
+const angleToPoint = (x1, y1, x2, y2) => {
+  let d = distance(x1, y1, x2, y2)
+  let dx = (x2 - x1) / d
+  let dy = (y2 - y1) / d
+
+  let a = Math.acos(dx)
+  return dy < 0 ? 2 * Math.PI - a : a
+}
+/* harmony export (immutable) */ __webpack_exports__["b"] = angleToPoint;
+
+
+const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+/* harmony export (immutable) */ __webpack_exports__["c"] = distance;
+
+
+
+/***/ }),
 /* 2 */,
-/* 3 */
+/* 3 */,
+/* 4 */
 /***/ (function(module, exports) {
 
 let width
@@ -84,7 +120,7 @@ module.exports = {
   origin: origin,
   width: width,
   height: height,
-  players: 5,
+  bots: 4,
   area: {
     min: 7500,
     max: 30000
@@ -93,10 +129,16 @@ module.exports = {
     relative: 1.1,
     decrease: 0.998
   },
-  detection: {
-    food: 3,
-    player: 3,
-    radius: 250
+  vision: {
+    food: 150,
+    player: 150
+  },
+  reward: {
+    tick: 1,
+    doNothing: -1,
+    eatFood: 250,
+    consumePlayer: 1000,
+    die: -Infinity
   },
   speed: {
     min: 0.3,
@@ -106,13 +148,13 @@ module.exports = {
     area: 750,
     amount: Math.round(width * height * 4e-4)
   },
+  lessons: 50,
   shouldShowDetection: false,
   isTrainedPop: true
 }
 
 
 /***/ }),
-/* 4 */,
 /* 5 */,
 /* 6 */,
 /* 7 */,
@@ -126,7 +168,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game__ = __webpack_require__(11);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__libs_socket_io__ = __webpack_require__(12);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__libs_socket_io___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__libs_socket_io__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__settings__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__settings__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__settings__);
 
 
@@ -141,16 +183,24 @@ window.setup = () => {
   // Set server's settings for creating the game
   window.socket.on('connect', () => {
     window.socket.emit('init', __WEBPACK_IMPORTED_MODULE_2__settings___default.a)
+     // window.socket.emit('tick')
   })
 
   // Handle a draw tick
   window.socket.on('tick', (data) => {
-
+    window.Game.update(data.food, data.bots)
+    window.Game.draw()
   })
 }
 
+let limit = 100
+let lastDraw = Date.now()
 window.draw = () => {
-  window.socket.emit('tick') // <-- see method in setup
+  let now = Date.now()
+  if ((now - lastDraw) > limit) {
+    window.socket.emit('tick') // <-- see method in setup
+    lastDraw = Date.now()
+  }
 }
 
 
@@ -159,8 +209,10 @@ window.draw = () => {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__settings__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__utils__ = __webpack_require__(1);
+
 
 
 class Game {
@@ -173,13 +225,20 @@ class Game {
     createCanvas(__WEBPACK_IMPORTED_MODULE_0__settings___default.a.width, __WEBPACK_IMPORTED_MODULE_0__settings___default.a.height)
   }
 
-  update () {
+  update (food, bots) {
+    if (food) {
+      this.food = food
+    }
+    if (bots) {
+      this.bots = bots
+    }
   }
 
   draw () {
     background(255)
     this.drawGrid()
     this.drawFood()
+    this.drawPlayers()
   }
 
   drawGrid () {
@@ -199,11 +258,23 @@ class Game {
   }
 
   drawFood () {
-    this.radius = Math.sqrt(this.area / Math.PI)
+    for (let food of this.food) {
+      let radius = Math.sqrt(food.area / Math.PI)
 
-    fill(this.color[0], this.color[1], this.color[2])
-    noStroke()
-    ellipse(this.x, this.y, this.radius)
+      fill(124, 252, 0)
+      noStroke()
+      ellipse(food.x, food.y, radius)
+    }
+  }
+
+  drawPlayers () {
+    for (let player of this.bots) {
+      let radius = Math.sqrt(player.area / Math.PI)
+
+      fill(Object(__WEBPACK_IMPORTED_MODULE_1__utils__["a" /* activationColor */])(player.area, __WEBPACK_IMPORTED_MODULE_0__settings___default.a.area.max))
+      noStroke()
+      ellipse(player.x, player.y, radius)
+    }
   }
 }
 

@@ -1,4 +1,5 @@
 import settings from '../settings'
+import { activationColor } from '../../utils'
 
 class Game {
   constructor () {
@@ -10,13 +11,20 @@ class Game {
     createCanvas(settings.width, settings.height)
   }
 
-  update () {
+  update (food, bots) {
+    if (food) {
+      this.food = food
+    }
+    if (bots) {
+      this.bots = bots
+    }
   }
 
   draw () {
     background(255)
     this.drawGrid()
     this.drawFood()
+    this.drawPlayers()
   }
 
   drawGrid () {
@@ -36,11 +44,23 @@ class Game {
   }
 
   drawFood () {
-    this.radius = Math.sqrt(this.area / Math.PI)
+    for (let food of this.food) {
+      let radius = Math.sqrt(food.area / Math.PI)
 
-    fill(this.color[0], this.color[1], this.color[2])
-    noStroke()
-    ellipse(this.x, this.y, this.radius)
+      fill(124, 252, 0)
+      noStroke()
+      ellipse(food.x, food.y, radius)
+    }
+  }
+
+  drawPlayers () {
+    for (let player of this.bots) {
+      let radius = Math.sqrt(player.area / Math.PI)
+
+      fill(activationColor(player.area, settings.area.max))
+      noStroke()
+      ellipse(player.x, player.y, radius)
+    }
   }
 }
 

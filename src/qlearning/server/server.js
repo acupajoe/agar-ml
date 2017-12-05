@@ -1,4 +1,5 @@
 import Game from './game'
+import { isEqual } from 'lodash'
 
 const express = require('express')
 const bodyParser = require('body-parser')
@@ -22,15 +23,29 @@ app.get('/', (req, res, next) => {
 
 io.on('connection', (socket) => {
   let settings
-  let game
+  let isBlocked = false
+  let lastFood = null
 
   socket.on('init', (clientSettings) => {
     settings = clientSettings
-    game = new Game(settings)
+    Game.init(settings)
   })
 
   socket.on('tick', () => {
-    game.update()
+    let state
+    let food
+    if (!isBlocked) {
+      isBlocked = true
+
+      Game.update()
+
+      state = Game.state
+      food = (lastFood && isEqual(state.food, lastFood)) ? false : state.food
+      socket.emit('tick', {bots: state.bots, food: food})
+
+      lastFood = state.food
+      isBlocked = false
+    }
   })
 })
 

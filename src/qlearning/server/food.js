@@ -1,4 +1,4 @@
-let settings
+let settings = null
 
 class Food {
   constructor (clientSettings) {
@@ -6,8 +6,6 @@ class Food {
     this.x = Math.floor(Math.random() * settings.width)
     this.y = Math.floor(Math.random() * settings.height)
     this.area = settings.food.area
-
-    this.color = [124, 252, 0]
   }
 
   reset () {

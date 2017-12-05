@@ -20,4 +20,4 @@ export const angleToPoint = (x1, y1, x2, y2) => {
   return dy < 0 ? 2 * Math.PI - a : a
 }
 
-export const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
+export const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))

@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 5);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -110,7 +110,43 @@ module.exports = {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bot__ = __webpack_require__(5);
+const activationColor = (value, max) => {
+  let power = 1 - Math.min(value / max, 1)
+  let color = [255, 255, 0]
+
+  if (power < 0.5) {
+    color[0] = 2 * power * 255
+  } else {
+    color[1] = (1.0 - 2 * (power - 0.5)) * 255
+  }
+
+  return color
+}
+/* harmony export (immutable) */ __webpack_exports__["a"] = activationColor;
+
+
+const angleToPoint = (x1, y1, x2, y2) => {
+  let d = distance(x1, y1, x2, y2)
+  let dx = (x2 - x1) / d
+  let dy = (y2 - y1) / d
+
+  let a = Math.acos(dx)
+  return dy < 0 ? 2 * Math.PI - a : a
+}
+/* harmony export (immutable) */ __webpack_exports__["b"] = angleToPoint;
+
+
+const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+/* harmony export (immutable) */ __webpack_exports__["c"] = distance;
+
+
+
+/***/ }),
+/* 2 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__bot__ = __webpack_require__(6);
 
 
 const settings = __webpack_require__(0)
@@ -209,7 +245,7 @@ class Trainer {
 
 
 /***/ }),
-/* 2 */
+/* 3 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -226,13 +262,13 @@ class Entity {
 
 
 /***/ }),
-/* 3 */,
-/* 4 */
+/* 4 */,
+/* 5 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__trainer__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__trainer__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(8);
 
 
@@ -285,14 +321,14 @@ window.draw = function () {
 }
 
 /***/ }),
-/* 5 */
+/* 6 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entity__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entity__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__settings__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__settings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__utils__ = __webpack_require__(1);
 
 
 
@@ -471,42 +507,6 @@ class Bot extends __WEBPACK_IMPORTED_MODULE_0__entity__["a" /* default */] {
 
 
 /***/ }),
-/* 6 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-const activationColor = (value, max) => {
-  let power = 1 - Math.min(value / max, 1)
-  let color = [255, 255, 0]
-
-  if (power < 0.5) {
-    color[0] = 2 * power * 255
-  } else {
-    color[1] = (1.0 - 2 * (power - 0.5)) * 255
-  }
-
-  return color
-}
-/* harmony export (immutable) */ __webpack_exports__["a"] = activationColor;
-
-
-const angleToPoint = (x1, y1, x2, y2) => {
-  let d = distance(x1, y1, x2, y2)
-  let dx = (x2 - x1) / d
-  let dy = (y2 - y1) / d
-
-  let a = Math.acos(dx)
-  return dy < 0 ? 2 * Math.PI - a : a
-}
-/* harmony export (immutable) */ __webpack_exports__["b"] = angleToPoint;
-
-
-const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x1 - x2, 2) + Math.pow(y1 - y2, 2))
-/* harmony export (immutable) */ __webpack_exports__["c"] = distance;
-
-
-
-/***/ }),
 /* 7 */
 /***/ (function(module, exports) {
 
@@ -519,7 +519,7 @@ module.exports = [{"nodes":[{"bias":0,"type":"input","squash":"LOGISTIC","index"
 "use strict";
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__settings__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__trainer__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__trainer__ = __webpack_require__(2);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__food__ = __webpack_require__(9);
 
 
@@ -603,7 +603,7 @@ class Game {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entity__ = __webpack_require__(2);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__entity__ = __webpack_require__(3);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__settings__ = __webpack_require__(0);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__settings___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__settings__);
 

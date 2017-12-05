@@ -14,7 +14,8 @@ module.exports = [
   {
     entry: {
       neat: path.join(path.resolve(__dirname, 'src/neat/client'), 'main.js'),
-      qlearning: path.join(path.resolve(__dirname, 'src/qlearning/client'), 'main.js')
+      qlearning: path.join(path.resolve(__dirname, 'src/qlearning/client'), 'main.js'),
+      nn: path.join(path.resolve(__dirname, 'src/nn/client'), 'main.js')
     },
     target: 'web',
     output: {
@@ -22,7 +23,7 @@ module.exports = [
       filename: '[name].bundle.js'
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.js&/,
           loader: 'babel-loader',
@@ -40,7 +41,8 @@ module.exports = [
   {
     entry: {
       'neat-server': path.join(path.resolve(__dirname, 'src/neat/server'), 'server.js'),
-      'qlearning-server': path.join(path.resolve(__dirname, 'src/qlearning/server'), 'server.js')
+      'qlearning-server': path.join(path.resolve(__dirname, 'src/qlearning/server'), 'server.js'),
+      'nn-server': path.join(path.resolve(__dirname, 'src/nn/server'), 'server.js')
     },
     target: 'node',
     output: {
@@ -48,16 +50,14 @@ module.exports = [
       filename: '[name].bundle.js'
     },
     module: {
-      loaders: [
+      rules: [
         {
           test: /\.js&/,
           loader: 'babel-loader',
           query: {
             preset: ['env']
           }
-        }
-      ],
-      rules: [
+        },
         {
           test: /\.(html)$/,
           use: {

@@ -7,16 +7,19 @@
   "scripts": {
     "build": "webpack",
     "watch": "webpack --watch",
-    "qlearning": "opn http://localhost:3000 && nodemon ./dist/qlearning-server.bundle",
-    "neat": "opn http://localhost:3000 && nodemon ./dist/neat-server.bundle"
+    "qlearning": "nodemon ./dist/qlearning-server.bundle",
+    "neat": "nodemon ./dist/neat-server.bundle"
   },
   "dependencies": {
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
+    "lodash": "^4.17.4",
     "q-exp": "^0.0.3",
+    "qlearning": "^0.1.2",
     "random-words": "^0.0.1",
     "rimraf": "^2.6.2",
-    "socket.io": "^2.0.4"
+    "socket.io": "^2.0.4",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-beta.32",
