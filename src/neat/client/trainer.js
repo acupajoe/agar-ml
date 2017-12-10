@@ -1,4 +1,7 @@
 import Bot from './bot'
+import RandomizedBot from './randomizedBot'
+import savedPositions from './positions.json'
+import Player from './player'
 
 const settings = require('../settings')
 
@@ -49,43 +52,86 @@ class Trainer {
   }
 
   start () {
+    window.Game.reset()
     window.Game.bots = []
-    for (let genome of this.neat.population) {
-      window.Game.bots.push(new Bot(genome))
+    let cursor = 0
+
+    // Create NEAT Bots
+    if (settings.bots > 0) {
+      for (let genome of this.neat.population) {
+        if (settings.shouldUseSavedPositions) {
+          let item = savedPositions.bots[cursor % savedPositions.bots.length]
+          window.Game.bots.push(new Bot(genome, item.x, item.y))
+        } else {
+          window.Game.bots.push(new Bot(genome))
+        }
+        cursor++
+      }
+      // window.Game.print()
     }
+
+    // Create Randomized Bots
+    if (settings.randomBots > 0) {
+      for (let i = 0; i < settings.randomBots; i++) {
+        if (settings.shouldUseSavedPositions) {
+          let item = savedPositions.bots[cursor % savedPositions.bots.length]
+          window.Game.randomBots.push(new RandomizedBot(item.x, item.y))
+        } else {
+          window.Game.randomBots.push(new RandomizedBot())
+        }
+        cursor++
+      }
+    }
+
+    // Create Player instance
+    if (settings.hasHumanControlledPlayer) {
+      if (settings.shouldUseSavedPositions) {
+        let item = savedPositions.bots[cursor % savedPositions.bots.length]
+        window.Game.player = new Player(item.x, item.y)
+      } else {
+        window.Game.player = new Player()
+      }
+    }
+
     document.getElementById('generation').innerText = this.neat.generation.toString()
   }
 
   end () {
     let newPopulation = []
 
-    console.log(`Generation: ${this.neat.generation}, Avg Score: ${this.neat.getAverage()}`)
+    let randomBotsAvg = window.Game.randomBots.reduce((a, b) => a + b.score, 0) / window.Game.randomBots.length
+    let average = settings.bots > 0 ? this.neat.getAverage() : randomBotsAvg
 
-    document.getElementById('average-fitness').innerText = Math.floor(this.neat.getAverage())
+    console.log(`Generation: ${this.neat.generation}, Avg Score: ${average}`)
 
     window.Chart.data.labels.push(`Gen. ${this.neat.generation + 1}`)
-    window.Chart.data.datasets[0].data.push({x: this.neat.generation + 1, y: this.neat.getAverage()})
+    window.Chart.data.datasets[0].data.push({x: this.neat.generation + 1, y: average})
     window.Chart.update()
 
-    this.neat.sort()
-
-    for (let i = 0; i < this.neat.elitism; i++) {
-      newPopulation.push(this.neat.population[i])
-    }
-
-    for (let i = 0; i < this.neat.popsize - this.neat.elitism; i++) {
-      newPopulation.push(this.neat.getOffspring())
-    }
+    document.getElementById('average-fitness').innerText = Math.floor(average)
 
     $.post('http://localhost:3000/store', {
       generation: this.neat.generation + 1,
-      data: JSON.stringify(newPopulation)
+      data: newPopulation ? JSON.stringify(newPopulation) : null,
+      averageFitness: average,
+      roundHighestFitness: window.Game.roundHighestFitness
     })
 
-    this.neat.population = newPopulation
-    this.neat.mutate()
-    this.neat.generation++
+    if (settings.bots > 0) {
+      this.neat.sort()
 
+      for (let i = 0; i < this.neat.elitism; i++) {
+        newPopulation.push(this.neat.population[i])
+      }
+
+      for (let i = 0; i < this.neat.popsize - this.neat.elitism; i++) {
+        newPopulation.push(this.neat.getOffspring())
+      }
+      this.neat.population = newPopulation
+      this.neat.mutate()
+    }
+
+    this.neat.generation++
     if (this.neat.generation < settings.maxGenerations) {
       this.start()
     }

@@ -68,7 +68,7 @@
 /***/ 13:
 /***/ (function(module, exports) {
 
-
+throw new Error("Module build failed: Error: ENOENT: no such file or directory, open '/Users/schultzjosephj/dev/agar-ml/src/nn/client/main.js'");
 
 /***/ })
 

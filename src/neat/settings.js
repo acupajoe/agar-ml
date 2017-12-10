@@ -1,4 +1,4 @@
-let width = window.innerWidth
+let width = 1000
 let height = 600
 
 module.exports = {
@@ -6,11 +6,11 @@ module.exports = {
   height: height,
   area: {
     min: 7500,
-    max: 30000
+    max: 500000
   },
   size: {
     relative: 1.1,
-    decrease: 0.998
+    decrease: 0.9995
   },
   detection: {
     food: 3,
@@ -18,19 +18,23 @@ module.exports = {
     radius: 250
   },
   speed: {
-    min: 0.3,
+    min: 0.5,
     normal: 2
   },
   food: {
     area: 750,
-    amount: Math.round(width * height * 4e-4)
+    amount: 650
   },
-  bots: 15,
+  bots: 5,
+  randomBots: 0,
   iterations: 750,
-  maxGenerations: 1000,
-  startingHiddenSize: 2,
-  mutationRate: 0.275,
-  elitismPercent: 0.15,
+  maxGenerations: 100,
+  startingHiddenSize: 0,
+  mutationRate: 0.3,
+  elitismPercent: 0.1,
   shouldShowDetection: false,
-  isTrainedPop: true
+  shouldUseSavedPositions: true,
+  shouldRunClean: false,
+  hasHumanControlledPlayer: true,
+  isTrainedPop: false
 }

@@ -2,10 +2,10 @@ import Entity from '../../entity'
 import settings from '../settings'
 
 export default class Food extends Entity {
-  constructor () {
+  constructor (x, y) {
     super()
-    this.x = Math.floor(Math.random() * settings.width)
-    this.y = Math.floor(Math.random() * settings.height)
+    this.x = x || Math.floor(Math.random() * settings.width)
+    this.y = y || Math.floor(Math.random() * settings.height)
     this.area = settings.food.area
 
     this.color = [124, 252, 0]

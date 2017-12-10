@@ -1,25 +1,56 @@
 import settings from '../settings'
 import Trainer from './trainer'
 import Food from './food'
+import savedPositions from './positions.json'
 
 class Game {
   constructor () {
     this.food = []
     this.bots = []
+    this.randomBots = []
+    this.player = null
     this.iterations = 0
     this.highestFitness = 0
+    this.roundHighestFitness = 0
 
     createCanvas(settings.width, settings.height)
 
-    for (let i = 0; i < settings.food.amount; i++) {
-      this.food.push(new Food())
-    }
+    this.reset()
 
     if (!settings.isTrainedPop) {
       for (let j = 0; j < 15; j++) {
         Trainer.neat.mutate()
       }
     }
+  }
+
+  reset () {
+    this.food = []
+    this.bots = []
+    this.randomBots = []
+    this.player = null
+    this.roundHighestFitness = 0
+
+    for (let i = 0; i < settings.food.amount; i++) {
+      if (settings.shouldUseSavedPositions) {
+        let item = savedPositions.food[i % savedPositions.food.length]
+        this.food.push(new Food(item.x, item.y))
+      } else {
+        this.food.push(new Food())
+      }
+    }
+  }
+
+  print () {
+    let out = {
+      food: this.food.map(f => {
+        return {x: f.x, y: f.y}
+      }),
+      bots: this.bots.map(b => {
+        return {x: b.x, y: b.y}
+      })
+    }
+    console.log(JSON.stringify(out))
   }
 
   update () {
@@ -31,6 +62,14 @@ class Game {
     for (let bot of this.bots) {
       bot.update()
     }
+
+    for (let bot of this.randomBots) {
+      bot.update()
+    }
+
+    if (this.player) {
+      this.player.update()
+    }
   }
 
   draw () {
@@ -38,6 +77,8 @@ class Game {
     this.drawGrid()
     this.drawFood()
     this.drawBots()
+    this.drawRandomizedBots()
+    this.drawPlayer()
 
     this.iterations++
     document.getElementById('iteration').innerText = `${this.iterations} / ${settings.iterations}`
@@ -68,6 +109,18 @@ class Game {
   drawBots () {
     for (let bot of this.bots) {
       bot.draw()
+    }
+  }
+
+  drawRandomizedBots () {
+    for (let bot of this.randomBots) {
+      bot.draw()
+    }
+  }
+
+  drawPlayer () {
+    if (this.player) {
+      this.player.draw()
     }
   }
 }

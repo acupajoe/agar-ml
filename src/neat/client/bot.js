@@ -1,13 +1,15 @@
 import Entity from '../../entity'
+import Food from './food'
 import settings from '../settings'
-import {activationColor, angleToPoint, distance} from '../../utils'
+import { activationColor, angleToPoint, distance } from '../../utils'
 
 export default class Bot extends Entity {
-  constructor (genome) {
+  constructor (genome, x, y) {
     super()
-
-    this.x = Math.floor(Math.random() * settings.width)
-    this.y = Math.floor(Math.random() * settings.height)
+    this._x = x
+    this._y = y
+    this.x = this._x || Math.floor(Math.random() * settings.width)
+    this.y = this._y || Math.floor(Math.random() * settings.height)
     this.vx = 0 // velocity x
     this.vy = 0 // velocity y
 
@@ -17,9 +19,15 @@ export default class Bot extends Entity {
     this.visualArea = this.area
     this.aggro = this.area
     this.detected = []
+    this.isDead = false
   }
 
   update () {
+    if (this.isDead) {
+      this.area = 0
+      return
+    }
+
     if (this.area > settings.area.max) this.area = settings.area.max
     if (this.area < settings.area.min) this.area = settings.area.min
 
@@ -52,9 +60,15 @@ export default class Bot extends Entity {
       window.Game.highestFitness = this.cognition.score
       document.getElementById('highest-fitness').innerText = Math.floor(this.cognition.score)
     }
+    if (this.cognition.score > window.Game.roundHighestFitness) {
+      window.Game.roundHighestFitness = this.cognition.score
+    }
   }
 
   draw () {
+    if (this.isDead) {
+      return
+    }
     this.visualArea = lerp(this.visualArea, this.area, 0.2)
     let radius = Math.sqrt(this.visualArea / Math.PI)
     let color = activationColor(this.cognition.score, window.Game.highestFitness)
@@ -68,8 +82,8 @@ export default class Bot extends Entity {
   }
 
   reset () {
-    this.x = Math.floor(Math.random() * settings.width)
-    this.y = Math.floor(Math.random() * settings.height)
+    this.x = this._x || Math.floor(Math.random() * settings.width)
+    this.y = this._y || Math.floor(Math.random() * settings.height)
     this.vx = 0
     this.vy = 0
     this.area = settings.area.min
@@ -83,7 +97,11 @@ export default class Bot extends Entity {
 
     if (d < (r1 + r2) / 2 && this.area > obj.area * settings.size.relative) {
       this.area += obj.area
-      obj.reset()
+      if (obj instanceof Food) {
+        obj.reset()
+      } else {
+        obj.isDead = true
+      }
       return true
     }
     return false
@@ -98,7 +116,11 @@ export default class Bot extends Entity {
     let nearestPlayers = []
     let distanceToPlayers = Array.apply(null, Array(settings.detection.player)).map(Number.prototype.valueOf, Infinity)
 
-    for (let player of window.Game.bots) {
+    if (window.Game.player) {
+      this.eat(window.Game.player)
+    }
+
+    for (let player of window.Game.bots.concat(window.Game.randomBots)) {
       if (player === this || this.eat(player)) continue
 
       let d = distance(this.x, this.y, player.x, player.y)

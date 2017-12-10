@@ -40,7 +40,9 @@ class Bot {
         this.y = state.me.y
         this.area = state.me.area
         return state
-      }).bind(this)
+      })
+      .load('./agents')
+      .bind(this)
 
     this.agent.verbose = false
   }
@@ -56,6 +58,7 @@ class Bot {
       .step()
       .perceiveState()
       .learn()
+      .save('./agents')
   }
 
   static generateState (fromState, givenAction) {

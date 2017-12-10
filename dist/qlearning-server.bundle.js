@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 8);
+/******/ 	return __webpack_require__(__webpack_require__.s = 10);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -88,17 +88,84 @@ module.exports = require("http");
 module.exports = require("path");
 
 /***/ }),
-/* 4 */,
-/* 5 */,
+/* 4 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__food__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(12);
+
+
+
+let settings = null
+
+class Game {
+  init (clientSettings) {
+    settings = clientSettings
+    this.food = []
+    this.bots = []
+    this.iterations = 0
+    this.highestFitness = 0
+
+    for (let i = 0; i < settings.food.amount; i++) {
+      this.food.push(new __WEBPACK_IMPORTED_MODULE_0__food__["a" /* default */](settings))
+    }
+
+    for (let j = 0; j < settings.bots; j++) {
+      let bot = new __WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */](j, settings)
+      bot.init()
+      this.bots.push(bot)
+    }
+  }
+
+  get state () {
+    return {
+      food: this.food.map(f => {
+        return {x: f.x, y: f.y, area: f.area}
+      }),
+      bots: this.bots.map(b => {
+        return {index: b.index, x: b.x, y: b.y, area: b.area}
+      }),
+      me: null
+    }
+  }
+
+  update () {
+    for (let bot of this.bots) {
+      try {
+        let currentState = this.state
+        currentState.me = {index: bot.index, x: bot.x, y: bot.y, area: bot.area}
+        bot.update(currentState)
+      } catch (e) {
+        console.error(e)
+        process.exit(0)
+      }
+    }
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["a"] = (new Game());
+
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+module.exports = require("lodash");
+
+/***/ }),
 /* 6 */,
 /* 7 */,
-/* 8 */
+/* 8 */,
+/* 9 */,
+/* 10 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
-/* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game__ = __webpack_require__(9);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(12);
+/* WEBPACK VAR INJECTION */(function(__dirname) {/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__game__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_lodash__);
 
 
@@ -157,68 +224,7 @@ server.listen(port)
 /* WEBPACK VAR INJECTION */}.call(__webpack_exports__, "src/qlearning/server"))
 
 /***/ }),
-/* 9 */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__food__ = __webpack_require__(10);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__bot__ = __webpack_require__(11);
-
-
-
-let settings = null
-
-class Game {
-  init (clientSettings) {
-    settings = clientSettings
-    this.food = []
-    this.bots = []
-    this.iterations = 0
-    this.highestFitness = 0
-
-    for (let i = 0; i < settings.food.amount; i++) {
-      this.food.push(new __WEBPACK_IMPORTED_MODULE_0__food__["a" /* default */](settings))
-    }
-
-    for (let j = 0; j < settings.bots; j++) {
-      let bot = new __WEBPACK_IMPORTED_MODULE_1__bot__["a" /* default */](j, settings)
-      bot.init()
-      this.bots.push(bot)
-    }
-  }
-
-  get state () {
-    return {
-      food: this.food.map(f => {
-        return {x: f.x, y: f.y, area: f.area}
-      }),
-      bots: this.bots.map(b => {
-        return {index: b.index, x: b.x, y: b.y, area: b.area}
-      }),
-      me: null
-    }
-  }
-
-  update () {
-    for (let bot of this.bots) {
-      try {
-        let currentState = this.state
-        currentState.me = {index: bot.index, x: bot.x, y: bot.y, area: bot.area}
-        bot.update(currentState)
-      } catch (e) {
-        console.error(e)
-        process.exit(0)
-      }
-    }
-  }
-
-}
-
-/* harmony default export */ __webpack_exports__["a"] = (new Game());
-
-
-/***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -244,16 +250,16 @@ class Food {
 
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(5);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(9);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__game__ = __webpack_require__(4);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_qlearning__ = __webpack_require__(13);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_qlearning___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_qlearning__);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__utils__ = __webpack_require__(14);
 
 
 
@@ -296,7 +302,9 @@ class Bot {
         this.y = state.me.y
         this.area = state.me.area
         return state
-      }).bind(this)
+      })
+      .load('./agents')
+      .bind(this)
 
     this.agent.verbose = false
   }
@@ -312,6 +320,7 @@ class Bot {
       .step()
       .perceiveState()
       .learn()
+      .save('./agents')
   }
 
   static generateState (fromState, givenAction) {
@@ -401,39 +410,13 @@ class Bot {
 
 
 /***/ }),
-/* 12 */
-/***/ (function(module, exports) {
-
-module.exports = require("lodash");
-
-/***/ }),
 /* 13 */
 /***/ (function(module, exports) {
 
 module.exports = require("qlearning");
 
 /***/ }),
-/* 14 */,
-/* 15 */
-/***/ (function(module, exports) {
-
-module.exports = require("socket.io");
-
-/***/ }),
-/* 16 */
-/***/ (function(module, exports) {
-
-module.exports = require("q-exp");
-
-/***/ }),
-/* 17 */
-/***/ (function(module, exports) {
-
-module.exports = "<html>\n<head>\n    <title>Q-Learning agar.io Learning</title>\n    <style>\n        html, body {\n            padding: 0;\n            margin: 0;\n        }\n\n        #status {\n            background: rgba(0, 0, 0, 0.6);\n            padding: 15px;\n            color: #fefefe;\n            font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n            text-transform: uppercase;\n        }\n\n        #status > p {\n            display: inline-block;\n            margin: 5px 15px;\n        }\n\n        #chart-container {\n            position: relative;\n            height: 250px;\n            padding-top: 10px;\n        }\n\n        #chart {\n            height: auto !important;\n        }\n\n        #download {\n            position: absolute;\n            top: -100%;\n            left: -100%;\n        }\n    </style>\n    <script src=\"/libs/jquery-3.2.1.min.js\"></script>\n    <script src=\"/libs/neataptic.js\"></script>\n    <script src=\"/libs/p5.min.js\"></script>\n    <script src=\"/libs/chart.min.js\"></script>\n</head>\n<body>\n\n<script src=\"/dist/qlearning.bundle.js\"></script>\n</body>\n</html>";
-
-/***/ }),
-/* 18 */,
-/* 19 */
+/* 14 */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -467,6 +450,24 @@ const distance = (x1, y1, x2, y2) => Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y
 /* harmony export (immutable) */ __webpack_exports__["a"] = distance;
 
 
+
+/***/ }),
+/* 15 */
+/***/ (function(module, exports) {
+
+module.exports = require("socket.io");
+
+/***/ }),
+/* 16 */
+/***/ (function(module, exports) {
+
+module.exports = require("q-exp");
+
+/***/ }),
+/* 17 */
+/***/ (function(module, exports) {
+
+module.exports = "<html>\n<head>\n    <title>Q-Learning agar.io Learning</title>\n    <style>\n        html, body {\n            padding: 0;\n            margin: 0;\n        }\n\n        #status {\n            background: rgba(0, 0, 0, 0.6);\n            padding: 15px;\n            color: #fefefe;\n            font-family: \"Helvetica Neue\", Helvetica, Arial, sans-serif;\n            text-transform: uppercase;\n        }\n\n        #status > p {\n            display: inline-block;\n            margin: 5px 15px;\n        }\n\n        #chart-container {\n            position: relative;\n            height: 250px;\n            padding-top: 10px;\n        }\n\n        #chart {\n            height: auto !important;\n        }\n\n        #download {\n            position: absolute;\n            top: -100%;\n            left: -100%;\n        }\n    </style>\n    <script src=\"/libs/jquery-3.2.1.min.js\"></script>\n    <script src=\"/libs/neataptic.js\"></script>\n    <script src=\"/libs/p5.min.js\"></script>\n    <script src=\"/libs/chart.min.js\"></script>\n</head>\n<body>\n\n<script src=\"/dist/qlearning.bundle.js\"></script>\n</body>\n</html>";
 
 /***/ })
 /******/ ]);
